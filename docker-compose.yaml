@@ -1,0 +1,33 @@
+services:
+  metabase:
+    container_name: metabase
+    image: metabase/metabase:v0.51.1.2
+    network_mode: "host"
+    environment:
+        MB_DB_TYPE: postgres
+        MB_DB_DBNAME: ${MB_DB_DBNAME}
+        MB_DB_PORT: ${MB_DB_PORT}
+        MB_DB_USER: ${MB_DB_USER}
+        MB_DB_PASS: ${MB_DB_PASS}
+        MB_DB_HOST: ${MB_DB_HOST}
+        MB_ENCRYPTION_SECRET_KEY: ${MB_ENCRYPTION_SECRET_KEY}
+  nginx:
+    container_name: metabase-nginx
+    image: nginx:1.23
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+        - ./nginx/config:/etc/nginx/conf.d
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
+    privileged: True
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  certbot:
+    image: certbot/certbot
+    network_mode: "host"
+    volumes:
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
+        - ./certbot/logs:/var/log/letsencrypt
+    privileged: True
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

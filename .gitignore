@@ -1,0 +1,10 @@
+# Environment Variables
+.envrc
+
+# Certbot Files
+certbot/www/*
+!certbot/www/.gitkeep
+certbot/conf/*
+!certbot/conf/.gitkeep
+certbot/logs/*
+!certbot/logs/.gitkeep
