@@ -17,9 +17,9 @@ services:
     restart: unless-stopped
     network_mode: "host"
     volumes:
-        - ./nginx/config:/etc/nginx/conf.d
-        - ./certbot/conf:/etc/letsencrypt
-        - ./certbot/www:/var/www/certbot
+      - ./nginx/config:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     privileged: True
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   certbot:
